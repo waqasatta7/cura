@@ -285,8 +285,8 @@ const Observations = () => {
                         <h6>Years</h6>
                       </div>
                     </div>
-                    <div className="flex justify-between items-center w-32  ml-[300px] text-center mb-4 h-[46px] bg-[#4DA9F2] rounded-[32px] py-[18px] px-[32px]">
-                      <div></div>
+                    <div onClick={()=>handleObservation()} className="flex justify-between items-center w-32  ml-[300px] text-center mb-4 h-[46px] bg-[#4DA9F2] rounded-[32px] py-[18px] px-[32px]">
+                      
                       <h1 className="flex justify-center items-center font-[Poppins] font-[600] text-[14px] text-[#F8F8F8] leading-[21px] ">
                         Observe
                       </h1>
