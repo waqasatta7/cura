@@ -9,7 +9,8 @@ const Observations = () => {
   const [selectedHistory, setSelectedHistory] = useState("");
   const [patientDetails, setPatientDetails] = useState({});
 
-  const handleObservation = async () => {
+  const handleObservations = async () => {
+    console.log("testinnnnnggg");
     try {
       const response = await axios.post(
         "http://212.1.213.140:8090/api/v1/hedis/evaluate",
@@ -20,14 +21,12 @@ const Observations = () => {
         }
       );
 
-      console.log(response);
       setPatientDetails(response?.data);
       setShowOberservations(false);
     } catch (error) {
       console.error(error);
     }
   };
-  console.log("test", patientDetails);
 
   const [selectedTags, setSelectedTags] = useState([]);
   const options = [
@@ -357,14 +356,14 @@ const Observations = () => {
                         </div>
                       </div>
                     </div>
-                    <button
-                      onClick={() => handleObservation()}
-                      className="flex justify-between items-center w-32 ml-[300px] text-center mb-4 h-[46px] bg-[#4DA9F2] hover:bg-[#45abff] cursor-pointer rounded-[32px] py-[18px] px-[32px]"
+                    <div
+                      onClick={() => handleObservations()}
+                      className="flex justify-between items-center w-32 ml-[300px] text-center mb-4 h-[46px] bg-[#4DA9F2] rounded-[32px] py-[18px] px-[32px]"
                     >
                       <h1 className="flex justify-center items-center cursor-pointer font-[Poppins] font-[600] text-[14px] text-[#F8F8F8] leading-[21px] ">
                         Observe
                       </h1>
-                    </button>
+                    </div>
                   </div>
                 </div>
               </div>
