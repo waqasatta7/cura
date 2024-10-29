@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import logo from "../assets/logo.png";
 import ProfileDropdown from "../components/modals/ProfileDropdown";
 import axios from "axios";
 
@@ -7,74 +6,67 @@ const Observations = () => {
   const [showProfileModal, setShowProfileModal] = useState(false);
   const [showOberservations, setShowOberservations] = useState(true);
   const [selectedValue, setSelectedValue] = useState("");
-
-  // const handleObservation = async () => {
-  //   try {
-  //     const response = await axios.post(
-  //       "http://212.1.213.140:8090/api/v1/hedis/evaluate",
-  //       {
-  //         measureId: "HEDIS_BCS",
-  //         version: "2015.0.0",
-  //         evaluationDate: "2024-01-01",
-  //         patient: {
-  //           id: 12345,
-  //           birthDate: "1960-06-28",
-  //           gender: "F",
-  //           procedures: [
-  //             {
-  //               id: "PROC001",
-  //               code: "77067",
-  //               codeSystem: "2.16.840.1.113883.6.12",
-  //               displayName: "Screening mammography bilateral",
-  //               startDate: "2023-06-01",
-  //               endDate: "2023-06-01",
-  //             },
-  //           ],
-  //         },
-  //       }
-  //     );
-
-  //     console.log(response);
-  //   } catch (error) {
-  //     console.error(error);
-  //   }
-  // };
+  const [selectedHistory, setSelectedHistory] = useState("");
   const [patientDetails, setPatientDetails] = useState({});
-  const handleObservation = () => {
-    console.log(selectedValue);
-    if (selectedValue == "Cytology") {
-      setPatientDetails({
-        title: "HEDIS_CCS",
-        note: "You have a breast cancer disease cytology",
-      });
-    } else if (selectedValue == "HPV Test") {
-      setPatientDetails({
-        title: "HPV",
-        note: "You have a Cervical cancer disease",
-      });
-    } else if (selectedValue == "Screening mammography bilateral") {
-      setPatientDetails({
-        title: "Screening mammography bilateral",
-        note: "You have a mammography bilateral",
-      });
-    } else if (selectedValue == "Colonoscopy") {
-      setPatientDetails({
-        title: "HEDIS_COL",
-        note: "You have a Colonoscopy",
-      });
-    } else if (selectedValue == "Hemoglobin A1c") {
-      setPatientDetails({
-        title: "Hemoglobin A1c",
-        note: "You have a Hemoglobin A1c",
-      });
-    } else if (selectedValue == "Dilated retinal eye exam") {
-      setPatientDetails({
-        title: "Dilated retinal eye exam",
-        note: "You have a Dilated retinal eye exam",
-      });
+
+  const handleObservation = async () => {
+    try {
+      const response = await axios.post(
+        "http://212.1.213.140:8090/api/v1/hedis/evaluate",
+        {
+          profile: selectedValue,
+          history: selectedHistory,
+          symptoms: selectedTags.join(", "),
+        }
+      );
+
+      console.log(response);
+      setPatientDetails(response?.data);
+      setShowOberservations(false);
+    } catch (error) {
+      console.error(error);
     }
-    setShowOberservations(false);
   };
+  console.log("test", patientDetails);
+
+  const [selectedTags, setSelectedTags] = useState([]);
+  const options = [
+    { id: 1, label: "Persistent cough" },
+    { id: 2, label: "wheezing" },
+    { id: 3, label: "mild fever" },
+    { id: 4, label: "difficulty breathing" },
+    { id: 5, label: "Severe" },
+    { id: 6, label: "squeezing chest pain radiating to left arm" },
+    { id: 7, label: "shortness of breath" },
+    { id: 8, label: "sweating" },
+    { id: 9, label: "Sudden-onset weakness on the right side" },
+    { id: 10, label: "difficulty speaking (slurred speech)" },
+    { id: 11, label: "facial droop" },
+    { id: 12, label: "Severe abdominal pain in the lower right quadrant" },
+    { id: 13, label: "nausea" },
+    { id: 14, label: "vomitting" },
+    { id: 15, label: "low-grade fever" },
+  ];
+
+  // Add a symptom
+  const handleSelectChange = (e) => {
+    const value = e.target.value;
+    if (!selectedTags.includes(value)) {
+      setSelectedTags([...selectedTags, value]);
+    }
+  };
+  console.log(selectedTags);
+
+  // Remove a symptom
+  const removeTag = (tag) => {
+    setSelectedTags(selectedTags.filter((t) => t !== tag));
+  };
+  const history = [
+    "Recently recovered from a common cold; no prior respiratory issues",
+    "History of high cholesterol and smoking",
+    "History of hypertension, no prior strokes",
+    "No prior abdominal surgeries; recent complaint of loss of appetite",
+  ];
 
   return (
     <div className="flex flex-col justify-start items-between z-20 mx-auto py-[8px] px-[12px] w-full h-[956px]">
@@ -208,14 +200,14 @@ const Observations = () => {
               </h1>
 
               {/* <div className="flex flex-col justify-start items-start border-[1px] border-[#0000000D] w-[944px] mx-auto mt-4 h-[231px] rounded-[16px] shadow-[0px_4px_12px_#00000008]"> */}
-              <div className="border-[1px] border-[#0000000D] w-full h-[273px] rounded-[16px] py-[20px] px-[32px] gap-[43px] shadow-[0px_4px_12px_#00000008]">
+              <div className="border-[1px] border-[#0000000D] w-full min-h-[450px] h-auto rounded-[16px] py-[20px] px-[32px] gap-[43px] shadow-[0px_4px_12px_#00000008]">
                 <h1 className="font-[Outfit] font-[700] text-[20px] leading-[25.2px]">
                   Address Info
                 </h1>
                 <div className="flex justify-between items-center">
-                  <div className="flex flex-col w-[548px] h-[172px] gap-[4px] space-y-[8px]">
-                    <div className="flex justify-between items-center space-y-[8px]">
-                      <h1>Chief Complaint</h1>
+                  <div className="flex flex-col w-[848px] h-[172px] gap-[4px] space-y-[8px]">
+                    <div className="flex justify-start items-center gap-[58px] space-y-[8px]">
+                      <h1>Select Profile</h1>
                       <select
                         className="w-[338px] h-[42px] border-[1px] border-[#0000000D] rounded-[10px] p-[4px] outline-none"
                         onChange={(e) => {
@@ -228,66 +220,148 @@ const Observations = () => {
                           selected
                           className="text-[#949494]"
                         >
-                          Select Symptoms
-                        </option>
-                        <option value="Colonoscopy" className="text-[#949494]">
-                          Colonoscopy
+                          Select Profile
                         </option>
                         <option
-                          value="Screening mammography bilateral"
+                          value="1-year-old girl"
                           className="text-[#949494]"
                         >
-                          Screening mammography bilateral
-                        </option>
-                        <option value="Cytology" className="text-[#949494]">
-                          Cytology
-                        </option>
-                        <option value="HPV Test" className="text-[#949494]">
-                          HPV Test
+                          1-year-old girl
                         </option>
                         <option
-                          value="Hemoglobin A1c"
+                          value="55-year-old man"
                           className="text-[#949494]"
                         >
-                          Hemoglobin A1c
+                          55-year-old man
                         </option>
                         <option
-                          value="Dilated retinal eye exam"
+                          value="70-year-old woman"
                           className="text-[#949494]"
                         >
-                          Dilated retinal eye exam
+                          70-year-old woman
+                        </option>
+                        <option
+                          value="12-year-old boy"
+                          className="text-[#949494]"
+                        >
+                          12-year-old boy
+                        </option>
+                      </select>
+                    </div>
+                    <div className="flex justify-start items-center gap-[52px] space-y-[8px]">
+                      <h1>Select History</h1>
+                      <select
+                        className="w-[338px] h-[42px] border-[1px] border-[#0000000D] rounded-[10px] p-[4px] outline-none"
+                        onChange={(e) => {
+                          setSelectedHistory(e.target.value);
+                        }}
+                      >
+                        <option
+                          value=""
+                          disabled
+                          selected
+                          className="text-[#949494]"
+                        >
+                          Select History
+                        </option>
+                        <option
+                          value="Recently recovered from a common cold; no prior respiratory issues"
+                          className="text-[#949494]"
+                        >
+                          Recently recovered from a common cold; no prior
+                          respiratory issues
+                        </option>
+                        <option
+                          value="History of high cholesterol and smoking"
+                          className="text-[#949494]"
+                        >
+                          History of high cholesterol and smoking
+                        </option>
+                        <option
+                          value="History of hypertension, no prior strokes"
+                          className="text-[#949494]"
+                        >
+                          History of hypertension, no prior strokes
+                        </option>
+                        <option
+                          value="No prior abdominal surgeries; recent complaint of loss
+                          of appetite"
+                          className="text-[#949494]"
+                        >
+                          No prior abdominal surgeries; recent complaint of loss
+                          of appetite
                         </option>
                       </select>
                     </div>
                     <div className="flex justify-between items-center gap-[8px]">
                       <h1>Sign/Symptom Duration</h1>
-                      <input
+                      <div className="w-full p-4 h-auto border rounded">
+                        <label className="block text-lg font-semibold mb-2">
+                          Select Symptoms
+                        </label>
+
+                        <select
+                          onChange={handleSelectChange}
+                          className="border rounded w-full p-2"
+                        >
+                          <option value="" disabled selected>
+                            Choose Symptoms
+                          </option>
+                          {options.map((option) => (
+                            <option key={option.id} value={option.label}>
+                              {option.label}
+                            </option>
+                          ))}
+                        </select>
+
+                        <div className="mt-4 flex flex-wrap gap-2">
+                          {selectedTags.map((tag, index) => (
+                            <div
+                              key={index}
+                              className="bg-blue-500 text-white px-2 py-1 rounded flex items-center"
+                            >
+                              <span>{tag}</span>
+                              <button
+                                className="ml-2 text-sm"
+                                onClick={() => removeTag(tag)}
+                              >
+                                &times;
+                              </button>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                      {/* <input
                         type="text"
                         placeholder=""
                         className="w-[338px] h-[42px] border-[1px] outline-none border-[#0000000D] rounded-[10px] p-[16px] placeholder:text-[14px] placeholder:font-[Outfit] placeholder:font-[400] placeholder:leading-[17.64px] placeholder:text-[#949494]"
-                      />
+                      /> */}
                     </div>
-                    <div className="flex justify-between items-center gap-[8px]">
+                    <div className="flex justify-start items-center gap-[118px]">
                       <h1>Unit</h1>
-                      <div className="bg-[#0000000D] rounded-[4px] px-[16px] py-[8px]">
-                        <h6>Hours</h6>
-                      </div>
-                      <div className="bg-[#0000000D] rounded-[4px] px-[16px] py-[8px]">
-                        <h6>Days</h6>
-                      </div>
-                      <div className="bg-[#0000000D] rounded-[4px] px-[16px] py-[8px]">
-                        <h6>Weeks</h6>
-                      </div>
-                      <div className="bg-[#0000000D] rounded-[4px] px-[16px] py-[8px]">
-                        <h6>Months</h6>
-                      </div>
-                      <div className="bg-[#0000000D] rounded-[4px] px-[16px] py-[8px]">
-                        <h6>Years</h6>
+                      <div className="flex justify-start items-center gap-[20px]">
+                        <div className="bg-[#0000000D] rounded-[4px] px-[16px] py-[8px]">
+                          <h6>Hours</h6>
+                        </div>
+                        <div className="bg-[#0000000D] rounded-[4px] px-[16px] py-[8px]">
+                          <h6>Days</h6>
+                        </div>
+                        <div className="bg-[#0000000D] rounded-[4px] px-[16px] py-[8px]">
+                          <h6>Weeks</h6>
+                        </div>
+                        <div className="bg-[#0000000D] rounded-[4px] px-[16px] py-[8px]">
+                          <h6>Months</h6>
+                        </div>
+                        <div className="bg-[#0000000D] rounded-[4px] px-[16px] py-[8px]">
+                          <h6>Years</h6>
+                        </div>
                       </div>
                     </div>
-                    <div className="flex justify-between items-center w-32  ml-[300px] text-center mb-4 h-[46px] bg-[#4DA9F2] rounded-[32px] py-[18px] px-[32px]">
-                      <div></div>
-                      <h1 className="flex justify-center items-center font-[Poppins] font-[600] text-[14px] text-[#F8F8F8] leading-[21px] ">
+                    <div
+                      onClick={() => handleObservation()}
+                      className="flex justify-between items-center w-32 ml-[300px] text-center mb-4 h-[46px] bg-[#4DA9F2] hover:bg-[#45abff] cursor-pointer rounded-[32px] py-[18px] px-[32px]"
+                    >
+                      <h1 className="flex justify-center items-center cursor-pointer font-[Poppins] font-[600] text-[14px] text-[#F8F8F8] leading-[21px] ">
                         Observe
                       </h1>
                     </div>
@@ -376,7 +450,7 @@ const Observations = () => {
                       className="w-[338px] h-[42px] border-[1px] outline-none border-[#0000000D] rounded-[10px] p-[16px] placeholder:text-[14px] placeholder:font-[Outfit] placeholder:font-[400] placeholder:leading-[17.64px] placeholder:text-[#949494]"
                     />
                   </div>
-                  <div className="flex justify-between items-center gap-[8px]">
+                  <div className="flex justify-center items-center gap-[8px]">
                     <h1>Unit</h1>
                     <div className="bg-[#0000000D] rounded-[4px] px-[16px] py-[8px]">
                       <h6>Hours</h6>
@@ -397,19 +471,24 @@ const Observations = () => {
                 </div>
               </div>
             </div>
-            <div className="flex flex-col justify-start items-start space-y-4 border-[1px] border-[#0000000D] w-full mx-auto mt-4 h-[109px] rounded-t-[16px]  shadow-[0px_4px_12px_#00000008]">
-              <div className="flex justify-start items-center w-full gap-[500px] h-[34px] bg-[#4DA9F2]  rounded-t-[8px] py-[8px] px-[12px]">
+            <div className="flex flex-col justify-start items-start space-y-4 border-[1px] border-[#0000000D] w-full mx-auto mt-4 h-auto rounded-t-[16px]  shadow-[0px_4px_12px_#00000008]">
+              <div className="flex justify-start items-center w-full gap-[140px] h-[34px] bg-[#4DA9F2]  rounded-t-[8px] py-[8px] px-[12px]">
                 <h1 className="text-white font-[Outfit] font-[600] text-[18px] text-center">
                   Active Condition
                 </h1>
-                <h1 className="text-white font-[Outfit] font-[600] text-[18px] text-center">
+                <h1 className="text-white font-[Outfit] font-[600] mr-12 text-[18px] text-center">
+                  Profile
+                </h1>
+                <h1 className="text-white font-[Outfit] font-[600] ml-12 text-[18px] text-center">
                   Notes
                 </h1>
               </div>
-              <div className="flex text-xs justify-start items-center w-full px-[12px] gap-[260px]">
-                <h1>{patientDetails.title}</h1>
-                <h1>Condition from 23 oct 2024 </h1>
-                <h1 className="w-32">{patientDetails.note}</h1>
+              <div className="flex text-xs justify-start items-center gap-[140px] w-full px-[12px]">
+                <h1 className="flex w-[50%]">{patientDetails.diagnosis}</h1>
+                <h1 className="flex w-[50%] h-auto">
+                  {patientDetails.profile}
+                </h1>
+                <h1 className="w-full">{patientDetails.justification}</h1>
                 <div className="flex gap-[2px]">
                   <h1 className="w-16">follow up</h1>
                   <h1 className="w-16">history of</h1>
@@ -417,19 +496,30 @@ const Observations = () => {
                 </div>
               </div>
             </div>
-            <div className="flex flex-col justify-start items-start space-y-4 border-[1px] border-[#0000000D] w-full mx-auto h-[109px] rounded-t-[16px]  shadow-[0px_4px_12px_#00000008]">
-              <div className="flex justify-start items-center w-full gap-[500px] h-[34px] bg-[#4DA9F2]  rounded-t-[8px] py-[8px] px-[12px]">
+            <div className="flex flex-col justify-start items-start space-y-4 border-[1px] border-[#0000000D] w-full mx-auto h-auto rounded-t-[16px]  shadow-[0px_4px_12px_#00000008]">
+              <div className="flex justify-start items-center w-full gap-[420px] h-[34px] bg-[#4DA9F2]  rounded-t-[8px] py-[8px] px-[12px]">
                 <h1 className="text-white font-[Outfit] font-[600] text-[18px] text-center">
                   History Condition
                 </h1>
                 <h1 className="text-white font-[Outfit] font-[600] text-[18px] text-center">
                   Notes
                 </h1>
+                <h1 className="text-white font-[Outfit] font-[600] text-[18px] text-center">
+                  Dated
+                </h1>
               </div>
-              <div className="flex text-xs justify-start items-center w-full px-[12px] gap-[260px]">
-                <h1>No condition available </h1>
-                <h1>Condition from 23 oct 2024 </h1>
+              <div className="flex text-xs justify-start items-center w-full px-[12px] gap-[210px]">
+                <h1>
+                  {patientDetails
+                    ? patientDetails.history
+                    : "No condition available "}
+                </h1>
+                <h1 className="">No history notes</h1>
+                <h1 className="pl-32">Condition from 23 oct 2024 </h1>
               </div>
+              <h1 className="px-[12px]">
+                Your Symptoms: {patientDetails.symptoms}
+              </h1>
             </div>
           </div>
         )}
