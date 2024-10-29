@@ -357,17 +357,11 @@ const Observations = () => {
                         </div>
                       </div>
                     </div>
-<<<<<<< HEAD
                     <div
                       onClick={() => handleObservation()}
                       className="flex justify-between items-center w-32 ml-[300px] text-center mb-4 h-[46px] bg-[#4DA9F2] hover:bg-[#45abff] cursor-pointer rounded-[32px] py-[18px] px-[32px]"
                     >
                       <h1 className="flex justify-center items-center cursor-pointer font-[Poppins] font-[600] text-[14px] text-[#F8F8F8] leading-[21px] ">
-=======
-                    <div onClick={()=>handleObservation()} className="flex justify-between items-center w-32  ml-[300px] text-center mb-4 h-[46px] bg-[#4DA9F2] rounded-[32px] py-[18px] px-[32px]">
-                      
-                      <h1 className="flex justify-center items-center font-[Poppins] font-[600] text-[14px] text-[#F8F8F8] leading-[21px] ">
->>>>>>> 9cc27b38b785b2c8384149ee406043e2698fc39a
                         Observe
                       </h1>
                     </div>
